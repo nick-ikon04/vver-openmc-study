@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -9,8 +10,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-ROOT = Path("results/02_assembly_331_2d/temperature_states")
-OUTPUT = Path("results/02_assembly_331_2d/porivniannia_staniv")
+PROJECT_ROOT = Path(__file__).resolve().parent
+DEFAULT_INPUT_ROOT = (
+    PROJECT_ROOT / "results" / "02_assembly_331_2d" / "temperature_states"
+)
+DEFAULT_OUTPUT = (
+    PROJECT_ROOT / "results" / "02_assembly_331_2d" / "porivniannia_staniv"
+)
 
 STATE_NAMES = {
     "tvz331_kholodnyi_T300_B1300": "Холодний стан",
@@ -21,9 +27,27 @@ STATE_NAMES = {
 }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--input-root", type=Path, default=DEFAULT_INPUT_ROOT,
+        help="папка із завершеними розрахунками п'яти станів",
+    )
+    parser.add_argument(
+        "--output", type=Path, default=DEFAULT_OUTPUT,
+        help="папка для підсумкової таблиці та графіка",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+    if not args.input_root.is_dir():
+        raise FileNotFoundError(
+            f"Папку з результатами станів не знайдено: {args.input_root}"
+        )
     rows = []
-    for run_dir in ROOT.iterdir():
+    for run_dir in args.input_root.iterdir():
         summary_path = run_dir / "pidsumok_rozrakhunku.json"
         parameters_path = run_dir / "vykorystani_parametry.json"
         if not summary_path.exists() or not parameters_path.exists():
@@ -54,8 +78,8 @@ def main() -> None:
     order = list(STATE_NAMES.values())
     table["порядок"] = table["стан"].map({name: index for index, name in enumerate(order)})
     table = table.sort_values("порядок").drop(columns="порядок")
-    OUTPUT.mkdir(parents=True, exist_ok=True)
-    table.to_csv(OUTPUT / "porivniannia_piaty_staniv_tvz.csv", index=False)
+    args.output.mkdir(parents=True, exist_ok=True)
+    table.to_csv(args.output / "porivniannia_piaty_staniv_tvz.csv", index=False)
 
     fig, ax = plt.subplots(figsize=(12, 6.8))
     labels = [
@@ -79,7 +103,7 @@ def main() -> None:
     ax.grid(axis="y", alpha=0.25)
     ax.legend()
     fig.tight_layout()
-    fig.savefig(OUTPUT / "porivniannia_k_inf_piaty_staniv_tvz.png", dpi=220)
+    fig.savefig(args.output / "porivniannia_k_inf_piaty_staniv_tvz.png", dpi=220)
     plt.close(fig)
 
 

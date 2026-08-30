@@ -16,6 +16,9 @@ import openmc
 import pandas as pd
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+
 def load_assembly_module():
     """Завантажити перевірені будівельні функції моделі однієї ТВЗ."""
     path = Path(__file__).with_name("02_assembly_331_2d.py")
@@ -429,8 +432,14 @@ def safe_name(value: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, default=Path("cluster_7_parameters.json"))
-    parser.add_argument("--output-root", type=Path, default=Path("results/03_cluster_7_2d/runs"))
+    parser.add_argument(
+        "--config", type=Path,
+        default=PROJECT_ROOT / "cluster_7_parameters.json",
+    )
+    parser.add_argument(
+        "--output-root", type=Path,
+        default=PROJECT_ROOT / "results" / "03_cluster_7_2d" / "runs",
+    )
     parser.add_argument("--build-only", action="store_true", help="лише побудувати геометрію")
     parser.add_argument(
         "--process-existing", type=Path,

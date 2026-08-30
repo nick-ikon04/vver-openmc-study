@@ -15,10 +15,12 @@ import math
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import numpy as np
 import openmc
 import pandas as pd
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 SCORE_UK = {
@@ -864,10 +866,14 @@ def safe_name(value: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, default=Path("assembly_331_parameters.json"))
+    parser.add_argument(
+        "--config", type=Path,
+        default=PROJECT_ROOT / "assembly_331_parameters.json",
+    )
     parser.add_argument("--run-name", help="перевизначити run_name з JSON")
     parser.add_argument(
-        "--output-root", type=Path, default=Path("results/02_assembly_331_2d/runs")
+        "--output-root", type=Path,
+        default=PROJECT_ROOT / "results" / "02_assembly_331_2d" / "runs",
     )
     parser.add_argument(
         "--build-only", action="store_true",

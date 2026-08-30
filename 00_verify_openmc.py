@@ -1,8 +1,7 @@
 """Перевірка встановлення OpenMC і бібліотеки ENDF/B-VIII.0.
 
-Запуск з Ubuntu/WSL:
+Запуск з кореня репозиторію в Ubuntu/WSL:
     conda activate openmc-env
-    cd /mnt/c/Work/universitet/task_openmc
     python 00_verify_openmc.py
 """
 
@@ -10,6 +9,9 @@ from pathlib import Path
 import os
 
 import openmc
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 def check_nuclear_data() -> Path:
@@ -107,7 +109,7 @@ def build_test_model() -> openmc.Model:
 
 def main() -> None:
     check_nuclear_data()
-    output = Path("results") / "installation_check"
+    output = PROJECT_ROOT / "results" / "installation_check"
     output.mkdir(parents=True, exist_ok=True)
 
     model = build_test_model()

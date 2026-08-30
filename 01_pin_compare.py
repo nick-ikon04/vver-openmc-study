@@ -19,6 +19,9 @@ import openmc
 import pandas as pd
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+
 SCORE_UK = {
     "flux": "потік",
     "absorption": "поглинання",
@@ -164,7 +167,6 @@ def load_parameters(path: Path) -> dict:
             raise ValueError(f"{section}.{key} має бути додатним цілим числом")
         return value
 
-    fuel = p["fuel"]
     for key in ("uo2_u235_enrichment_wt_percent", "ugd_u235_enrichment_wt_percent"):
         enrichment = finite("fuel", key)
         if not 0.0 < enrichment <= 20.0:
@@ -182,7 +184,6 @@ def load_parameters(path: Path) -> dict:
         if not 294.0 <= temperature <= 1200.0:
             raise ValueError(f"{section}.temperature_K має бути в інтервалі [294, 1200] K")
 
-    g = p["geometry"]
     pitch = finite("geometry", "pin_pitch_cm")
     hole = finite("geometry", "fuel_hole_radius_cm")
     fuel_radius = finite("geometry", "fuel_radius_cm")
@@ -551,14 +552,15 @@ def save_comparison(uo2: dict, ugd: dict, output_dir: Path, p: dict) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--config", type=Path, default=Path("pin_parameters.json"),
+        "--config", type=Path, default=PROJECT_ROOT / "pin_parameters.json",
         help="JSON-файл з усіма параметрами моделі та розрахунку",
     )
     parser.add_argument(
         "--run-name", help="перевизначити run_name з файла параметрів"
     )
     parser.add_argument(
-        "--output-root", type=Path, default=Path("results/01_pin_compare/runs"),
+        "--output-root", type=Path,
+        default=PROJECT_ROOT / "results" / "01_pin_compare" / "runs",
         help="коренева папка; всередині створюється окрема папка запуску",
     )
     parser.add_argument(

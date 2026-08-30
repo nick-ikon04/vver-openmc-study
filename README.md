@@ -1,26 +1,125 @@
-# VVER OpenMC Study
+# Дослідження ВВЕР в OpenMC
 
-OpenMC models for neutronics analysis of a VVER fuel pin, a VVER-1000
-331-pin fuel assembly, and a seven-assembly cluster.
+[Українська](README.md) | [English](README.en.md)
 
-## Contents
+Параметризовані моделі OpenMC для нейтронно-фізичного аналізу паливної
+комірки, 331-позиційної ТВЗ ВВЕР-1000 і кластера із семи ТВЗ.
 
-- `00_verify_openmc.py` checks the OpenMC installation and nuclear data.
-- `01_pin_compare.py` compares UO2 and UGD fuel-pin models.
-- `02_assembly_331_2d.py` models a 331-pin VVER fuel assembly.
-- `03_cluster_7_2d.py` models a seven-assembly cluster.
-- `04_compare_assembly_states.py` compares operating states.
-- `parameters/` contains versioned JSON input configurations.
+## Можливості
 
-Generated HDF5 files, calculation results, reports, archives, and local nuclear
-data are intentionally excluded from Git. They are stored separately in the
-project's Google Drive archive.
+- перевірка встановлення OpenMC і бібліотеки ядерних даних;
+- порівняння паливних комірок UO₂ та UO₂–Gd₂O₃;
+- розрахунок 2D-моделі ТВЗ ВВЕР-1000 на 331 позицію;
+- розрахунок кластера із семи ТВЗ;
+- порівняння п'яти температурно-борних станів ТВЗ;
+- створення таблиць CSV, підсумків JSON і графіків PNG.
 
-## Environment
+## Структура
 
-The launch scripts expect WSL Ubuntu and a Conda environment named
-`openmc-env`. The environment must provide OpenMC, NumPy, pandas, and
-Matplotlib, together with a configured OpenMC nuclear-data library.
+| Файл | Призначення |
+| --- | --- |
+| `00_verify_openmc.py` | Перевіряє OpenMC, ядерні дані та виконує малий тестовий розрахунок. |
+| `01_pin_compare.py` | Порівнює комірки з паливом UO₂ та UO₂–Gd₂O₃. |
+| `02_assembly_331_2d.py` | Моделює одну 331-позиційну ТВЗ. |
+| `03_cluster_7_2d.py` | Моделює кластер із семи ТВЗ. |
+| `04_compare_assembly_states.py` | Порівнює п'ять завершених станів ТВЗ. |
+| `parameters/assembly_states/` | Містить конфігурації температурно-борних станів. |
+| `environment.yml` | Відтворює середовище Conda `openmc-env`. |
 
-Run `start-openmc.ps1` or `start-openmc.cmd` to open the project environment.
-Use `start-jupyter.cmd` to start JupyterLab.
+Докладні описи моделей: [паливна комірка](README_01_pin_compare.md) і
+[331-позиційна ТВЗ](README_02_assembly_331_2d.md).
+
+## Вимоги
+
+- Windows 10 або 11 з WSL 2;
+- Ubuntu у WSL;
+- Conda або Mamba;
+- бібліотека ядерних даних у форматі OpenMC.
+
+Створення середовища:
+
+```bash
+conda env create -f environment.yml
+conda activate openmc-env
+```
+
+Змінна `OPENMC_CROSS_SECTIONS` має вказувати на файл `cross_sections.xml`
+встановленої бібліотеки ядерних даних:
+
+```bash
+export OPENMC_CROSS_SECTIONS=/path/to/cross_sections.xml
+```
+
+Саму бібліотеку ядерних даних не включено до репозиторію через її розмір.
+
+## Запуск у Windows
+
+- `start-openmc.ps1` або `start-openmc.cmd` відкриває середовище проєкту;
+- `start-jupyter.cmd` запускає JupyterLab.
+
+Скрипти автоматично визначають шлях до репозиторію, зокрема коли він містить
+пробіли. Абсолютні шляхи до старого комп'ютера не використовуються.
+
+Перевірка середовища та короткий тест OpenMC:
+
+```bash
+python 00_verify_openmc.py
+```
+
+## Розрахунки
+
+Порівняння паливних комірок:
+
+```bash
+python 01_pin_compare.py
+```
+
+Одна ТВЗ:
+
+```bash
+python 02_assembly_331_2d.py
+```
+
+Побудова геометрії ТВЗ без перенесення нейтронів:
+
+```bash
+python 02_assembly_331_2d.py --build-only
+```
+
+Кластер із семи ТВЗ:
+
+```bash
+python 03_cluster_7_2d.py
+```
+
+Побудова геометрії кластера без перенесення нейтронів:
+
+```bash
+python 03_cluster_7_2d.py --build-only
+```
+
+Конфігурацію можна явно вибрати через параметр `--config`, а папку результатів
+— через `--output-root`. Значення за замовчуванням визначаються від розташування
+скриптів, тому команди можна запускати з будь-якої робочої папки.
+
+## Порівняння станів ТВЗ
+
+Спочатку виконайте п'ять розрахунків із конфігураціями в
+`parameters/assembly_states/`, зберігаючи їх в одній папці:
+
+```bash
+for config in parameters/assembly_states/*.json; do
+  python 02_assembly_331_2d.py \
+    --config "$config" \
+    --output-root results/02_assembly_331_2d/temperature_states
+done
+python 04_compare_assembly_states.py
+```
+
+## Дані, яких немає в Git
+
+`.gitignore` виключає результати OpenMC, HDF5, згенеровані XML, звіти,
+архіви, кеші, віртуальні середовища та локальні налаштування. Великі вихідні
+дані й готові документи слід зберігати окремо, наприклад у Google Drive.
+
+Не публікуйте власний `cross_sections.xml`, файли `.env` або локальні шляхи.
