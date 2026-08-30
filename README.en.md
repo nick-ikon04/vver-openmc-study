@@ -30,6 +30,14 @@ More detailed model documentation is available for the
 [fuel-pin comparison](README_01_pin_compare.md) and the
 [331-position assembly](README_02_assembly_331_2d.md).
 
+## Report and example results
+
+- The [five-page Ukrainian technical report](docs/zvit_openmc_tvel_tvz_7tvz_20260823_uk.docx)
+  summarizes the fuel-pin, 331-position assembly, seven-assembly cluster, and
+  five temperature and boron state calculations.
+- The [verified example results](examples/README.md) provide compact CSV, JSON,
+  and PNG files without large HDF5 data, generated XML, or OpenMC logs.
+
 ## Requirements
 
 - Windows 10 or 11 with WSL 2;
@@ -101,8 +109,9 @@ python 04_compare_assembly_states.py
 
 ## Files excluded from Git
 
-`.gitignore` excludes OpenMC results, HDF5 and generated XML files, reports,
-archives, caches, virtual environments, and local settings. Store large output
-data and finished documents separately, for example in Google Drive.
+`.gitignore` excludes complete OpenMC run directories, HDF5 and generated XML
+files, most reports, archives, caches, virtual environments, and local settings.
+Only selected compact examples and one published technical report are tracked.
+Store large output data separately, for example in Google Drive.
 
 Do not publish a personal `cross_sections.xml`, `.env` files, or local paths.
