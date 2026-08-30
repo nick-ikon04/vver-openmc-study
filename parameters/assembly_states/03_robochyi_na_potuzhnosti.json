@@ -1,0 +1,11 @@
+{
+  "run_name": "tvz331_robochyi_Tfuel1027_Twater575_B1300",
+  "fuel": {"uo2_u235_enrichment_wt_percent": 3.7, "ugd_u235_enrichment_wt_percent": 3.6, "gd2o3_wt_percent": 4.0, "temperature_K": 1027.0, "uo2_density_g_cm3": 10.4, "gd2o3_density_g_cm3": 7.407},
+  "moderator": {"temperature_K": 575.0, "density_g_cm3": 0.7235, "boron_ppm": 1300.0},
+  "cladding": {"temperature_K": 600.0},
+  "helium": {"temperature_K": 600.0, "density_g_cm3": 0.0016},
+  "geometry": {"pin_pitch_cm": 1.275, "assembly_flat_to_flat_cm": 23.6, "fuel_hole_radius_cm": 0.070, "fuel_radius_cm": 0.380, "clad_inner_radius_cm": 0.386, "clad_outer_radius_cm": 0.4582, "guide_inner_radius_cm": 0.545, "guide_outer_radius_cm": 0.6323, "central_inner_radius_cm": 0.480, "central_outer_radius_cm": 0.5626, "z_min_cm": -0.5, "z_max_cm": 0.5, "radial_boundary_type": "reflective", "axial_boundary_type": "reflective"},
+  "layout": {"hex_radius": 10, "central_coordinate": [0, 0], "gd_orbit_seeds": [[-8, 0], [1, -5]], "guide_orbit_seeds": [[0, -6], [2, -3], [4, -7]]},
+  "simulation": {"particles": 10000, "batches": 120, "inactive": 30, "threads": 4, "seed": 3311027},
+  "energy_groups_eV": [0.0, 0.625, 100000.0, 20000000.0]
+}

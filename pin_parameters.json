@@ -1,0 +1,37 @@
+{
+  "run_name": "baseline_T1027_Gd4",
+  "fuel": {
+    "uo2_u235_enrichment_wt_percent": 3.7,
+    "ugd_u235_enrichment_wt_percent": 3.6,
+    "gd2o3_wt_percent": 4.0,
+    "temperature_K": 1027.0,
+    "uo2_density_g_cm3": 10.4,
+    "gd2o3_density_g_cm3": 7.407
+  },
+  "moderator": {
+    "temperature_K": 575.0,
+    "density_g_cm3": 0.7235
+  },
+  "cladding": {
+    "temperature_K": 575.0
+  },
+  "helium": {
+    "temperature_K": 575.0,
+    "density_g_cm3": 0.0016
+  },
+  "geometry": {
+    "pin_pitch_cm": 1.275,
+    "fuel_hole_radius_cm": 0.070,
+    "fuel_radius_cm": 0.380,
+    "clad_inner_radius_cm": 0.386,
+    "clad_outer_radius_cm": 0.455,
+    "z_min_cm": -0.5,
+    "z_max_cm": 0.5
+  },
+  "simulation": {
+    "particles": 20000,
+    "batches": 120,
+    "inactive": 30,
+    "threads": 4
+  }
+}

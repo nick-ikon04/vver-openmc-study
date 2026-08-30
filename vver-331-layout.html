@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ТВЗ ВВЕР-1000 — схема 331 позиції</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5d6879;
+      --line: #334155;
+      --water: #bae6fd;
+      --water-line: #0284c7;
+      --fuel: #f6c453;
+      --fuel-line: #9a6500;
+      --gd: #16a34a;
+      --gd-line: #14532d;
+      --guide: #7c3aed;
+      --guide-line: #4c1d95;
+      --central: #dc2626;
+      --central-line: #7f1d1d;
+      --clad: #94a3b8;
+      --clad-line: #475569;
+      --gap: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .page { max-width: 1320px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 4px; font-size: clamp(24px, 3vw, 38px); }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    p { margin: 0; }
+    .subtitle { color: var(--muted); margin-bottom: 18px; }
+    .layout { display: grid; grid-template-columns: minmax(540px, 1.7fr) minmax(330px, 1fr); gap: 18px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgb(15 23 42 / 7%);
+    }
+    svg { display: block; width: 100%; height: auto; }
+    .assembly-water { fill: var(--water); fill-opacity: .58; stroke: var(--line); stroke-width: 2; }
+    .pin { stroke-width: 1.1; }
+    .fuel { fill: var(--fuel); stroke: var(--fuel-line); }
+    .gd { fill: var(--gd); stroke: var(--gd-line); }
+    .guide { fill: var(--guide); stroke: var(--guide-line); }
+    .central { fill: var(--central); stroke: var(--central-line); }
+    .water-fill { fill: var(--water); stroke: var(--water-line); }
+    .clad-fill { fill: var(--clad); stroke: var(--clad-line); }
+    .gap-fill { fill: var(--gap); stroke: #64748b; }
+    .pin-mark { fill: #fff; font-size: 7px; font-weight: 800; pointer-events: none; }
+    .tube-mark { fill: #fff; font-size: 8px; font-weight: 900; pointer-events: none; }
+    .svg-title { fill: var(--text); font-size: 14px; font-weight: 700; }
+    .svg-note { fill: var(--muted); font-size: 11px; }
+    .leader { stroke: #64748b; stroke-width: 1.2; fill: none; }
+
+    .legend { display: grid; grid-template-columns: repeat(2, minmax(210px, 1fr)); gap: 8px; margin-top: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 7px 9px; border: 1px solid #e2e8f0; border-radius: 9px; }
+    .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid; flex: none; display: grid; place-items: center; color: #fff; font-size: 10px; font-weight: 900; }
+    .swatch.fuel { background: var(--fuel); border-color: var(--fuel-line); color: #4a3200; }
+    .swatch.gd { background: var(--gd); border-color: var(--gd-line); }
+    .swatch.guide { background: var(--guide); border-color: var(--guide-line); }
+    .swatch.central { background: var(--central); border-color: var(--central-line); }
+    .swatch.water { background: var(--water); border-color: var(--water-line); color: #075985; }
+    .swatch.clad { background: var(--clad); border-color: var(--clad-line); color: #1e293b; }
+    .legend-item b { display: block; }
+    .legend-item small { color: var(--muted); }
+    .note { margin-top: 12px; padding: 10px 12px; border-left: 4px solid var(--water-line); background: #e0f2fe; border-radius: 6px; color: #164e63; }
+    .counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+    .count { padding: 8px; text-align: center; border-radius: 9px; color: #fff; font-weight: 800; }
+    .count.fuel { color: #4a3200; }
+    .element-notes { display: grid; gap: 8px; margin-top: 10px; }
+    .element-notes div { border-left: 4px solid #94a3b8; padding: 5px 9px; background: #f8fafc; }
+    code { background: #eef2f7; padding: 1px 5px; border-radius: 4px; }
+
+    @media (max-width: 950px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .page { padding: 12px; }
+      .panel { padding: 10px; }
+      .legend { grid-template-columns: 1fr; }
+      .counts { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>ТВЗ ВВЕР-1000: 331 позиція</h1>
+    <p class="subtitle">Наочна кольорова карта елементів. Наведіть вказівник на будь-яку позицію — з'являться її тип та аксіальна координата.</p>
+
+    <div class="layout">
+      <section class="panel">
+        <h2>Поперечний переріз ТВЗ</h2>
+        <svg id="assembly" viewBox="0 0 650 650" role="img" aria-label="ТВЗ ВВЕР-1000: 300 звичайних твелів, 12 твегів, 18 напрямних каналів та одна центральна труба"></svg>
+
+        <div class="counts" aria-label="Кількість позицій">
+          <div class="count fuel">300<br><small>твелів UO₂</small></div>
+          <div class="count gd">12<br><small>твегів</small></div>
+          <div class="count guide">18<br><small>напрямних</small></div>
+          <div class="count central">1<br><small>центр. труба</small></div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><span class="swatch fuel">U</span><span><b>Жовте коло</b><small>звичайний твел UO₂</small></span></div>
+          <div class="legend-item"><span class="swatch gd">G</span><span><b>Зелене коло з G</b><small>твег UO₂–Gd₂O₃</small></span></div>
+          <div class="legend-item"><span class="swatch guide">Н</span><span><b>Фіолетове кільце</b><small>напрямний канал СКЗ</small></span></div>
+          <div class="legend-item"><span class="swatch central">Ц</span><span><b>Червоне коло з Ц</b><small>центральна труба</small></span></div>
+          <div class="legend-item"><span class="swatch water">В</span><span><b>Блакитне тло</b><small>вода-теплоносій</small></span></div>
+          <div class="legend-item"><span class="swatch clad">О</span><span><b>Сіре кільце</b><small>оболонка / матеріал труби</small></span></div>
+        </div>
+        <p class="note">Колір не є фізичною властивістю матеріалу. В OpenMC ці самі кольори зручно передавати в <code>openmc.Plot.colors</code>, щоб зображення всіх наступних моделей мали спільну легенду.</p>
+      </section>
+
+      <aside class="panel">
+        <h2>Як виглядають окремі позиції</h2>
+        <svg id="elements" viewBox="0 0 380 690" role="img" aria-label="Перерізи звичайного твела, гадолінієвого твега, напрямного каналу та центральної труби"></svg>
+        <div class="element-notes">
+          <div><b>Паливо</b> — жовте або зелене.</div>
+          <div><b>Газовий зазор</b> — тонке біле кільце.</div>
+          <div><b>Оболонка</b> — сіре кільце навколо палива.</div>
+          <div><b>Вода</b> — блакитна область зовні та всередині порожніх каналів.</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+  (() => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const make = (tag, attrs = {}, text = '') => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([name, value]) => node.setAttribute(name, value));
+      if (text) node.textContent = text;
+      return node;
+    };
+    const addTitle = (node, text) => node.appendChild(make('title', {}, text));
+    const key = ([q, r]) => `${q},${r}`;
+    const rotate = ([q, r]) => [-r, q + r];
+    const orbit = start => {
+      const result = [];
+      let current = start;
+      for (let i = 0; i < 6; i += 1) { result.push(current); current = rotate(current); }
+      return result;
+    };
+    const axialPositions = radius => {
+      const result = [];
+      for (let q = -radius; q <= radius; q += 1) {
+        for (let r = -radius; r <= radius; r += 1) {
+          if (Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)) <= radius) result.push([q, r]);
+        }
+      }
+      return result;
+    };
+    const xy = (q, r, pitch, cx, cy) => [cx + pitch * (q + r / 2), cy + pitch * Math.sqrt(3) * r / 2];
+    const hexPoints = (cx, cy, side) => [0, 60, 120, 180, 240, 300].map(deg => {
+      const angle = deg * Math.PI / 180;
+      return `${cx + side * Math.cos(angle)},${cy + side * Math.sin(angle)}`;
+    }).join(' ');
+    const text = (svg, x, y, value, cls = 'svg-note', anchor = 'middle') => svg.appendChild(make('text', { x, y, class: cls, 'text-anchor': anchor }, value));
+
+    // Координати карти UGD з використаної раніше схеми OECD/NEA.
+    const gd = new Set([...orbit([-8, 0]), ...orbit([1, -5])].map(key));
+    const guides = new Set([...orbit([0, -6]), ...orbit([2, -3]), ...orbit([4, -7])].map(key));
+
+    const assembly = document.getElementById('assembly');
+    const cx = 325;
+    const cy = 315;
+    const pitch = 27;
+    const radius = 10;
+    const flat = (1 + radius * Math.sqrt(3)) * pitch;
+    assembly.appendChild(make('polygon', { points: hexPoints(cx, cy, flat / Math.sqrt(3)), class: 'assembly-water' }));
+
+    for (const position of axialPositions(radius)) {
+      const [q, r] = position;
+      const [x, y] = xy(q, r, pitch, cx, cy);
+      const group = make('g', { tabindex: '0' });
+      let kind = 'Звичайний твел UO₂';
+
+      if (q === 0 && r === 0) {
+        kind = 'Центральна труба';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 9.2, class: 'pin central' }));
+        group.appendChild(make('text', { x, y: y + 2.7, class: 'tube-mark', 'text-anchor': 'middle' }, 'Ц'));
+      } else if (gd.has(key(position))) {
+        kind = 'Твег UO₂–Gd₂O₃';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 8.5, class: 'pin gd' }));
+        group.appendChild(make('text', { x, y: y + 2.4, class: 'pin-mark', 'text-anchor': 'middle' }, 'G'));
+      } else if (guides.has(key(position))) {
+        kind = 'Напрямний канал СКЗ';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 9.1, class: 'pin guide' }));
+        group.appendChild(make('circle', { cx: x, cy: y, r: 4.4, class: 'water-fill' }));
+      } else {
+        group.appendChild(make('circle', { cx: x, cy: y, r: 6.7, class: 'pin fuel' }));
+      }
+      addTitle(group, `${kind}; координата (q=${q}, r=${r})`);
+      assembly.appendChild(group);
+    }
+    text(assembly, cx, 21, 'Крок позицій P = 1,275 см • розмір ТВЗ під ключ ≈ 23,4 см', 'svg-title');
+    text(assembly, cx, 638, '12 зелених G • 18 фіолетових кілець • червоний центр', 'svg-note');
+
+    const elements = document.getElementById('elements');
+    const drawFuel = (y, fillClass, label, sublabel, annular = false) => {
+      const x = 92;
+      elements.appendChild(make('polygon', { points: hexPoints(x, y, 58), class: 'water-fill' }));
+      elements.appendChild(make('circle', { cx: x, cy: y, r: 40, class: 'clad-fill' }));
+      elements.appendChild(make('circle', { cx: x, cy: y, r: 33, class: 'gap-fill' }));
+      elements.appendChild(make('circle', { cx: x, cy: y, r: 31, class: fillClass }));
+      if (annular) elements.appendChild(make('circle', { cx: x, cy: y, r: 7.5, class: 'gap-fill' }));
+      elements.appendChild(make('path', { d: `M143 ${y} H165`, class: 'leader' }));
+      text(elements, 174, y - 7, label, 'svg-title', 'start');
+      text(elements, 174, y + 13, sublabel, 'svg-note', 'start');
+    };
+    const drawTube = (y, cls, label, sublabel, mark) => {
+      const x = 92;
+      elements.appendChild(make('polygon', { points: hexPoints(x, y, 58), class: 'water-fill' }));
+      elements.appendChild(make('circle', { cx: x, cy: y, r: 43, class: cls }));
+      elements.appendChild(make('circle', { cx: x, cy: y, r: 33, class: 'water-fill' }));
+      if (mark) text(elements, x, y + 5, mark, 'tube-mark');
+      elements.appendChild(make('path', { d: `M143 ${y} H165`, class: 'leader' }));
+      text(elements, 174, y - 7, label, 'svg-title', 'start');
+      text(elements, 174, y + 13, sublabel, 'svg-note', 'start');
+    };
+
+    drawFuel(88, 'fuel', 'Звичайний твел', 'UO₂; показано без отвору');
+    drawFuel(255, 'gd', 'Гадолінієвий твег', 'UO₂–Gd₂O₃; показано з отвором', true);
+    drawTube(422, 'guide', 'Напрямний канал', 'вода або поглинальний стрижень', 'Н');
+    drawTube(589, 'central', 'Центральна труба', 'вода / вимірювальний канал', 'Ц');
+  })();
+  </script>
+</body>
+</html>

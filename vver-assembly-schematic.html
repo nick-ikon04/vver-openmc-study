@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Від ТВЗ-331 до активної зони ВВЕР-1000</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5d6879;
+      --water: #bae6fd;
+      --water-line: #0284c7;
+      --fuel: #f6c453;
+      --fuel-line: #9a6500;
+      --gd: #16a34a;
+      --gd-soft: #86efac;
+      --gd-line: #14532d;
+      --guide: #7c3aed;
+      --guide-soft: #c4b5fd;
+      --guide-line: #4c1d95;
+      --central: #dc2626;
+      --central-line: #7f1d1d;
+      --periphery: #fb923c;
+      --periphery-line: #9a3412;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .page { max-width: 1450px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 5px; font-size: clamp(24px, 3vw, 38px); }
+    h2 { margin: 0 0 8px; font-size: 21px; }
+    p { margin: 0; }
+    .subtitle { color: var(--muted); margin-bottom: 18px; }
+    .diagram { display: grid; grid-template-columns: minmax(400px, 1fr) 84px minmax(460px, 1.2fr); gap: 14px; align-items: stretch; }
+    .panel { background: var(--panel); border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; box-shadow: 0 8px 24px rgb(15 23 42 / 7%); }
+    svg { display: block; width: 100%; height: auto; }
+    .assembly-water { fill: var(--water); fill-opacity: .6; stroke: #334155; stroke-width: 2; }
+    .pin { stroke-width: 1; }
+    .fuel { fill: var(--fuel); stroke: var(--fuel-line); }
+    .gd { fill: var(--gd); stroke: var(--gd-line); }
+    .guide { fill: var(--guide); stroke: var(--guide-line); }
+    .central { fill: var(--central); stroke: var(--central-line); }
+    .water { fill: var(--water); stroke: var(--water-line); }
+    .mark { fill: white; font-size: 7px; font-weight: 900; pointer-events: none; }
+    .core-boundary { fill: #e0f2fe; stroke: #0f172a; stroke-width: 2; }
+    .assembly-cell { stroke-width: 1.2; }
+    .core-normal { fill: var(--fuel); stroke: var(--fuel-line); }
+    .core-gd { fill: var(--gd-soft); stroke: var(--gd-line); }
+    .core-control { fill: var(--guide-soft); stroke: var(--guide-line); }
+    .core-periphery { fill: #fdba74; stroke: var(--periphery-line); }
+    .core-label { fill: #172033; font-size: 8px; font-weight: 900; pointer-events: none; }
+    .svg-title { fill: var(--text); font-size: 14px; font-weight: 750; }
+    .svg-note { fill: var(--muted); font-size: 11px; }
+    .arrow { display: grid; place-items: center; text-align: center; color: #0f172a; font-weight: 800; }
+    .arrow .shaft { font-size: 54px; line-height: 1; color: var(--water-line); }
+    .arrow small { display: block; color: var(--muted); font-weight: 600; }
+    .legend { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 8px; margin-top: 14px; }
+    .legend-item { display: flex; gap: 9px; align-items: center; padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 9px; background: white; }
+    .swatch { width: 24px; height: 24px; flex: none; display: grid; place-items: center; border: 2px solid; font-size: 10px; font-weight: 900; }
+    .circle { border-radius: 50%; }
+    .swatch.fuel { background: var(--fuel); border-color: var(--fuel-line); }
+    .swatch.gd { background: var(--gd); border-color: var(--gd-line); color: white; }
+    .swatch.guide { background: var(--guide); border-color: var(--guide-line); color: white; }
+    .swatch.central { background: var(--central); border-color: var(--central-line); color: white; }
+    .swatch.core-normal { background: var(--fuel); border-color: var(--fuel-line); }
+    .swatch.core-gd { background: var(--gd-soft); border-color: var(--gd-line); }
+    .swatch.core-control { background: var(--guide-soft); border-color: var(--guide-line); }
+    .swatch.core-periphery { background: #fdba74; border-color: var(--periphery-line); }
+    .legend-item b { display: block; }
+    .legend-item small { display: block; color: var(--muted); }
+    .hierarchy { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .step { background: #fff; border: 1px solid #cbd5e1; border-top: 5px solid var(--water-line); border-radius: 10px; padding: 12px; }
+    .step b { font-size: 17px; }
+    .warning { margin-top: 14px; padding: 11px 13px; background: #fff7ed; border-left: 5px solid var(--periphery); border-radius: 7px; color: #7c2d12; }
+    a { color: #0369a1; font-weight: 700; }
+
+    @media (max-width: 1050px) {
+      .diagram { grid-template-columns: 1fr; }
+      .arrow { min-height: 64px; }
+      .arrow .shaft { transform: rotate(90deg); }
+      .legend { grid-template-columns: repeat(2, minmax(190px, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .page { padding: 12px; }
+      .panel { padding: 10px; }
+      .legend, .hierarchy { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Від однієї ТВЗ‑331 до активної зони ВВЕР‑1000</h1>
+    <p class="subtitle">Ліворуч маленькі кола — окремі позиції всередині однієї ТВЗ. Праворуч кожен шестикутник — уже ціла ТВЗ.</p>
+
+    <div class="diagram">
+      <section class="panel">
+        <h2>1. Одна ТВЗ: 331 позиція</h2>
+        <svg id="assembly" viewBox="0 0 520 540" role="img" aria-label="Одна ТВЗ ВВЕР-1000 із 331 внутрішньою позицією"></svg>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch circle fuel">U</span><span><b>UO₂</b><small>звичайний твел</small></span></div>
+          <div class="legend-item"><span class="swatch circle gd">G</span><span><b>UO₂–Gd₂O₃</b><small>твег</small></span></div>
+          <div class="legend-item"><span class="swatch circle guide">Н</span><span><b>Напрямна</b><small>канал СКЗ</small></span></div>
+          <div class="legend-item"><span class="swatch circle central">Ц</span><span><b>Центральна</b><small>труба</small></span></div>
+        </div>
+        <p style="margin-top:10px"><a href="vver-331-layout.html">Відкрити збільшену схему ТВЗ та перерізи елементів →</a></p>
+      </section>
+
+      <div class="arrow" aria-hidden="true">
+        <div><div class="shaft">→</div><small>163 рази<br>з різними<br>завантаженнями</small></div>
+      </div>
+
+      <section class="panel">
+        <h2>2. Активна зона: 163 ТВЗ</h2>
+        <svg id="core" viewBox="0 0 590 540" role="img" aria-label="Схематична активна зона ВВЕР-1000 зі 163 тепловидільних збірок"></svg>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch core-normal">З</span><span><b>Звичайна ТВЗ</b><small>приклад типу завантаження</small></span></div>
+          <div class="legend-item"><span class="swatch core-gd">G</span><span><b>ТВЗ із твегами</b><small>зелена, позначка G</small></span></div>
+          <div class="legend-item"><span class="swatch core-control">К</span><span><b>Позиція групи СКЗ</b><small>фіолетова, позначка К</small></span></div>
+          <div class="legend-item"><span class="swatch core-periphery">П</span><span><b>Периферійна ТВЗ</b><small>помаранчевий зовнішній ряд</small></span></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="hierarchy" aria-label="Ієрархія моделі">
+      <div class="step"><b>Матеріал</b><br>UO₂, UO₂–Gd₂O₃, вода, цирконієва оболонка, поглинач.</div>
+      <div class="step"><b>ТВЗ</b><br>331 позиція: 300 звичайних твелів + 12 твегів + 18 напрямних + центральна труба.</div>
+      <div class="step"><b>Активна зона</b><br>163 позиції ТВЗ. Кожна позиція посилається на власний варіант <code>Universe</code>.</div>
+    </div>
+
+    <p class="warning"><b>Важливо:</b> права карта показує структуру та колірний принцип, а не реальну карту завантаження конкретної кампанії енергоблока. Точний склад ТВЗ, збагачення, положення твегів і груп СКЗ потрібно задавати за вибраним бенчмарком або офіційною картою завантаження. Форму зі 163 позицій побудовано як гексагон радіуса 7 без шести кутових позицій.</p>
+  </main>
+
+  <script>
+  (() => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const make = (tag, attrs = {}, value = '') => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([name, attr]) => node.setAttribute(name, attr));
+      if (value) node.textContent = value;
+      return node;
+    };
+    const addTitle = (node, value) => node.appendChild(make('title', {}, value));
+    const key = ([q, r]) => `${q},${r}`;
+    const rotate = ([q, r]) => [-r, q + r];
+    const orbit = start => {
+      const result = [];
+      let current = start;
+      for (let i = 0; i < 6; i += 1) { result.push(current); current = rotate(current); }
+      return result;
+    };
+    const axial = radius => {
+      const cells = [];
+      for (let q = -radius; q <= radius; q += 1) {
+        for (let r = -radius; r <= radius; r += 1) {
+          if (Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)) <= radius) cells.push([q, r]);
+        }
+      }
+      return cells;
+    };
+    const xy = (q, r, pitch, cx, cy) => [cx + pitch * (q + r / 2), cy + pitch * Math.sqrt(3) * r / 2];
+    const hex = (cx, cy, side) => [0, 60, 120, 180, 240, 300].map(deg => {
+      const angle = deg * Math.PI / 180;
+      return `${cx + side * Math.cos(angle)},${cy + side * Math.sin(angle)}`;
+    }).join(' ');
+    const label = (svg, x, y, value, cls = 'svg-note') => svg.appendChild(make('text', { x, y, class: cls, 'text-anchor': 'middle' }, value));
+
+    const assembly = document.getElementById('assembly');
+    const gdPins = new Set([...orbit([-8, 0]), ...orbit([1, -5])].map(key));
+    const guidePins = new Set([...orbit([0, -6]), ...orbit([2, -3]), ...orbit([4, -7])].map(key));
+    const aCx = 260, aCy = 270, aPitch = 21.4, aRadius = 10;
+    const aFlat = (1 + aRadius * Math.sqrt(3)) * aPitch;
+    assembly.appendChild(make('polygon', { points: hex(aCx, aCy, aFlat / Math.sqrt(3)), class: 'assembly-water' }));
+    for (const pos of axial(aRadius)) {
+      const [q, r] = pos;
+      const [x, y] = xy(q, r, aPitch, aCx, aCy);
+      const group = make('g');
+      let kind = 'Звичайний твел UO₂';
+      if (q === 0 && r === 0) {
+        kind = 'Центральна труба';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 7.4, class: 'pin central' }));
+        group.appendChild(make('text', { x, y: y + 2.3, class: 'mark', 'text-anchor': 'middle' }, 'Ц'));
+      } else if (gdPins.has(key(pos))) {
+        kind = 'Твег UO₂–Gd₂O₃';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 6.8, class: 'pin gd' }));
+        group.appendChild(make('text', { x, y: y + 2.2, class: 'mark', 'text-anchor': 'middle' }, 'G'));
+      } else if (guidePins.has(key(pos))) {
+        kind = 'Напрямний канал';
+        group.appendChild(make('circle', { cx: x, cy: y, r: 7.3, class: 'pin guide' }));
+        group.appendChild(make('circle', { cx: x, cy: y, r: 3.3, class: 'water' }));
+      } else {
+        group.appendChild(make('circle', { cx: x, cy: y, r: 5.1, class: 'pin fuel' }));
+      }
+      addTitle(group, `${kind}; позиція q=${q}, r=${r}`);
+      assembly.appendChild(group);
+    }
+    label(assembly, aCx, 18, '1 шестикутник = одна ТВЗ', 'svg-title');
+    label(assembly, aCx, 530, 'Усередині: 331 окрема позиція', 'svg-note');
+
+    const core = document.getElementById('core');
+    const coreRadius = 7;
+    const corners = new Set(orbit([7, 0]).map(key));
+    const controlAssemblies = new Set([[0, 0], ...orbit([0, -2]), ...orbit([1, -4])].map(key));
+    const gdAssemblies = new Set([...orbit([0, -3]), ...orbit([2, -5]), ...orbit([0, -6])].map(key));
+    const cCx = 295, cCy = 270, cPitch = 34.2, cSide = 18.4;
+    const activePositions = axial(coreRadius).filter(pos => !corners.has(key(pos)));
+    core.appendChild(make('polygon', { points: hex(cCx, cCy, 267), class: 'core-boundary' }));
+
+    for (const pos of activePositions) {
+      const [q, r] = pos;
+      const [x, y] = xy(q, r, cPitch, cCx, cCy);
+      const ring = Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r));
+      let className = 'core-normal';
+      let kind = 'Звичайна ТВЗ (схематично)';
+      let mark = '';
+      if (controlAssemblies.has(key(pos))) {
+        className = 'core-control'; kind = 'Позиція групи СКЗ (схематично)'; mark = 'К';
+      } else if (gdAssemblies.has(key(pos))) {
+        className = 'core-gd'; kind = 'ТВЗ із твегами (схематично)'; mark = 'G';
+      } else if (ring === coreRadius) {
+        className = 'core-periphery'; kind = 'Периферійна ТВЗ (схематично)'; mark = 'П';
+      }
+      const group = make('g', { tabindex: '0' });
+      group.appendChild(make('polygon', { points: hex(x, y, cSide), class: `assembly-cell ${className}` }));
+      if (mark) group.appendChild(make('text', { x, y: y + 2.8, class: 'core-label', 'text-anchor': 'middle' }, mark));
+      addTitle(group, `${kind}; координата ТВЗ q=${q}, r=${r}`);
+      core.appendChild(group);
+    }
+    label(core, cCx, 18, '163 шестикутники = 163 ТВЗ', 'svg-title');
+    label(core, cCx, 530, '169 позицій повного гексагона − 6 кутів = 163', 'svg-note');
+  })();
+  </script>
+</body>
+</html>
